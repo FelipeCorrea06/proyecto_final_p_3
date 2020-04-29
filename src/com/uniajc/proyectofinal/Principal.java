@@ -18,6 +18,8 @@ import java.util.Date;
  */
 public class Principal {
 
+    static Nodo cabeza;
+
     /**
      * @param args the command line arguments
      */
@@ -25,84 +27,133 @@ public class Principal {
     public static final String quote = "\"";
     public static int cuenta = 0;
 
+    public static class Nodo {
+
+        String fila[];
+        Nodo siguiente, anterior;
+
+        public String[] getFila() {
+            return fila;
+        }
+
+        public void setFila(String[] fila) {
+            this.fila = fila;
+        }
+
+        public Nodo getSiguiente() {
+            return siguiente;
+        }
+
+        public void setSiguiente(Nodo siguiente) {
+            this.siguiente = siguiente;
+        }
+
+        public Nodo getAnterior() {
+            return anterior;
+        }
+
+        public void setAnterior(Nodo anterior) {
+            this.anterior = anterior;
+        }
+    }
+
+    public static class GestionDocumento {
+
+        private Nodo cabeza;
+        BufferedReader br = null;
+        String[][] dimension = null;
+        int cant = 0;
+        String nombre = "SOLCANMA";
+
+        public void LeerCsv() throws IOException {
+            try {
+                br = new BufferedReader(new FileReader("src\\DocumentoLlegda\\CarpetaComun\\SOLCANMA.csv"));
+                String linea = br.readLine();
+                Nodo nuevo = new Nodo();
+                while (null != linea) {
+                    nuevo.fila = linea.split(separador);
+                    System.out.println(Arrays.toString(nuevo.fila));
+
+                    linea = br.readLine();
+                    nuevo.siguiente = cabeza;
+                    cuenta++;
+
+                    if (ListaVacia()) {
+                        cabeza = nuevo;
+                    } else {
+                        cabeza.anterior = nuevo;
+                        cabeza = nuevo;
+                    }
+                }
+
+                cant = Cantidad();
+
+                convertirAXML(nombre, nuevo, cant);
+
+            } catch (Exception e) {
+            } finally {
+                if (null != br) {
+                    br.close();
+                }
+            }
+        }
+
+        public boolean ListaVacia() {
+            if (cabeza == null) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        
+        //Hay un error en este método porque siempre muestra el último nodo
+        //y se queda infinitamente en el while.
+        public int Cantidad() {
+        int cant = 0;
+        Nodo reco = cabeza;
+        while (reco != null) {
+            reco = reco.siguiente;
+            cant++;
+        }
+        return cant;
+    }
+    }
+
+    
+
+    public static void convertirAXML(String nombreArchivo, Nodo filas, int cant) {
+        Date fecha = new Date();
+
+        for (int i = 0; i < cant; i++) {
+            System.out.println(" Creación XML: ");
+            System.out.println(Arrays.toString(filas.fila));
+            filas.anterior = cabeza;
+        }
+
+        /*
+         try {
+         PrintWriter writer = new PrintWriter("src\\DocumentoXML\\nombreArchivo.xml", "UTF-8");
+         int cuenta = 0;
+         for (int i = 0; i < filas.length; i++) {
+         for (int j = 0; j < filas.length; j++) {
+         writer.println(filas[i]);
+         }
+
+         System.out.println("Datos: " + Arrays.toString(filas));
+         }
+         System.out.println("Datos 2: " + filas[0]);
+         writer.close();
+         } catch (Exception e) {
+         System.out.println("Error genarl: " + e.getMessage());
+         }*/
+    }
+
     public static void main(String[] args) throws IOException {
         // TODO code application logic here
-        BufferedReader br = null;
-        String[] filas = null;
-        String[][] dimension = null;
 
-        try {
-            String nombre = "SOLCANMA";
-            br = new BufferedReader(new FileReader("src\\DocumentoLlegda\\CarpetaComun\\SOLCANMA.csv"));
-            String linea = br.readLine();
-
-            while (null != linea) {
-                
-                filas = linea.split(separador);
-                System.out.println(Arrays.toString(filas));                
-                /*Se debe usar si el archivo viene con "\"
-                 fields = removeTrailingQuotes(fields);
-                 System.out.println(Arrays.toString(fields));*/
-                linea = br.readLine();
-                cuenta++;
-            }
-            dimension = new String[cuenta][filas.length];
-            br = new BufferedReader(new FileReader("src\\DocumentoLlegda\\CarpetaComun\\SOLCANMA.csv"));
-            String linea2 = br.readLine();
-             while (null != linea2) {
-                
-                               
-                for (int i = 0; i < cuenta; i++) {
-                    filas = linea2.split(separador);
-                    for (int j = 0; j < filas.length; j++) {
-                        
-                        dimension[i][j] = filas[j];
-                       
-                    }
-                    linea2 = br.readLine();
-                }
-                cuenta++;
-            }
-           
-
-            convertirAXML(nombre, dimension);
-
-        } catch (Exception e) {
-        } finally {
-            if (null != br) {
-                br.close();
-            }
-        }
-    }
-
-    public static void convertirAXML(String nombreArchivo, String[][] filas) {
-        Date fecha = new Date();
-        try {
-            PrintWriter writer = new PrintWriter("src\\DocumentoXML\\nombreArchivo.xml", "UTF-8");
-            int cuenta = 0;
-            for (int i = 0; i < filas.length; i++) {
-                for (int j = 0; j < filas.length; j++) {
-                    writer.println(filas[i]);
-                }
-
-                System.out.println("Datos: " + Arrays.toString(filas));
-            }
-            System.out.println("Datos 2: " + filas[0]);
-            writer.close();
-        } catch (Exception e) {
-            System.out.println("Error genarl: " + e.getMessage());
-        }
+        GestionDocumento ges = new GestionDocumento();
+        ges.LeerCsv();
 
     }
 
-    /*Se debe usar si el archivo viene con "\" 
-     private static String[] removeTrailingQuotes(String[] fields) {
-
-     String result[] = new String[fields.length];
-
-     for (int i=0;i<result.length;i++){
-     result[i] = fields[i].replaceAll("^"+quote, "").replaceAll(quote+"$", "");
-     }
-     return result;
-     }*/
 }
