@@ -60,18 +60,24 @@ public class GestionDocumento {
             //String[] cabecera = null;
             PilaArchivosLlegada cabecera = new PilaArchivosLlegada();
             while (null != linea) {
-                cabecera.setNombre(linea.split(separador).toString());
-                System.out.println((cabecera.getNombre()));
+                String[] cabeza;
+                cabeza = linea.split(separador);
+                
+                for(int i = 0; i < cabeza.length; i++){
+                    cabecera.AgregarElementoAlInicio(cabeza[i].toString());
+                }
+                
+               
 
                 linea = br.readLine();
-                cabecera.setSiguiente(cabeza);
+                cabecera.setSiguiente(cabecera);
                 cuenta++;
 
                 if (ListaVacia()) {
-                    cabeza = cabecera;
+                    cabecera = cabecera;
                 } else {
-                    cabeza.setAnterior(cabecera);
-                    cabeza = cabecera;
+                    cabecera.setAnterior(cabecera);
+                    cabecera = cabecera;
                 }
             }
             cabecera.Imprimir();
