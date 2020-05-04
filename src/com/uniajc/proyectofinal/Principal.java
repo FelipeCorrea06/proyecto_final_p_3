@@ -25,15 +25,7 @@ public class Principal {
     /**
      * @param args the command line arguments
      */
-    
-
-
- 
-    
-
-    
-
-        /*
+    /*
          try {
          PrintWriter writer = new PrintWriter("src\\DocumentoXML\\nombreArchivo.xml", "UTF-8");
          int cuenta = 0;
@@ -49,13 +41,11 @@ public class Principal {
          } catch (Exception e) {
          System.out.println("Error genarl: " + e.getMessage());
          }*/
-    
-
     public static void main(String[] args) throws IOException {
         // TODO code application logic here
         GestionDocumento gest = new GestionDocumento();
-        gest.ApilarDocumento();
-        //gest.LeerCsv();
+        //gest.ApilarDocumento();
+        gest.LeerCsv();
 
     }
 
