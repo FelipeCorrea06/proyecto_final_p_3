@@ -7,12 +7,7 @@ package com.uniajc.proyectofinal;
 
 import com.uniajc.controlador.GestionDocumento;
 import com.uniajc.modelo.PilaArchivosLlegada;
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.Date;
 
 /**
  *
@@ -24,6 +19,7 @@ public class Principal {
 
     /**
      * @param args the command line arguments
+     * @throws java.io.IOException
      */
     /*
          try {

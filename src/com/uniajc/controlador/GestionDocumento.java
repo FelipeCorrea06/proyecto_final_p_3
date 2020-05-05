@@ -29,6 +29,7 @@ public class GestionDocumento {
     String[][] dimension = null;
     int cant = 0;
     String nombre = "SOLCANMA";
+    private String ruta_salida = "src\\DocumentoLlegda\\CarpetaComun";
 
     public void ApilarDocumento() throws IOException {
         PilaArchivosLlegada pilar = new PilaArchivosLlegada();
@@ -91,7 +92,8 @@ public class GestionDocumento {
             }
             formato_xml += "\n\t</detalle>\n</documento>";
             System.out.println("Contenido del Archivo:\n" + formato_xml);
-            CrearArchivoXML(formato_xml, "ruta carpeta salida");
+            ruta_salida += "\\" + nombrecompleto;
+            CrearArchivoXML(formato_xml, ruta_salida);
 
         } catch (IOException e) {
             System.out.println("Error LeerCSV: " + e.getMessage());
