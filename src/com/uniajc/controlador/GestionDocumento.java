@@ -7,11 +7,11 @@ package com.uniajc.controlador;
 
 import com.uniajc.modelo.PilaArchivosLlegada;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -21,8 +21,8 @@ import java.util.Date;
 public class GestionDocumento {
 
     public static final String separador = ";";
-    public static final String quote = "\"";
-    public static int cuenta = 0;
+    //public static final String quote = "\"";
+    //public static int cuenta = 0;
 
     private PilaArchivosLlegada cabeza;
     BufferedReader br = null;
@@ -32,7 +32,7 @@ public class GestionDocumento {
 
     public void ApilarDocumento() throws IOException {
         PilaArchivosLlegada pilar = new PilaArchivosLlegada();
-        String rutaLlegada = "C:\\Users\\lfcr0843\\Documents\\Proyecto final programacion 3\\Proyectofinal\\src\\DocumentoLlegda\\CarpetaComun";
+        String rutaLlegada = "src\\DocumentoLlegda\\CarpetaComun";
         File carpeta = new File(rutaLlegada);
         File[] listado = carpeta.listFiles();
         if (listado == null || listado.length == 0) {
@@ -51,7 +51,6 @@ public class GestionDocumento {
     }
 
     public void LeerCsv() throws IOException {
-        //PilaArchivosLlegada pilar = new PilaArchivosLlegada();
         String nombrecompleto = "SOLCANMA03052020162445.csv";
         //String nombrecorto = String.valueOf(nombrecompleto.split("_"));
 
@@ -60,7 +59,6 @@ public class GestionDocumento {
             String linea = br.readLine();
             String[] headers = linea.split(separador);
 
-            //PilaArchivosLlegada cabecera = new PilaArchivosLlegada();
             int numLines = 0;
             while (linea != null) {
                 linea = br.readLine();
@@ -77,45 +75,26 @@ public class GestionDocumento {
                 cont++;
             }
             String[] data_show = new String[headers.length];
-            String formato_xml = "<project>";
+            String formato_xml = "<documento>";
             // eliminamos la primera fila que contiene la cabecera
             removeIndex(data_file, 0);
             for (int i = 0; i < data_file.length - 1; i++) {
                 data_show = data_file[i].split(separador);
-                formato_xml += "\n\t";
-                for (int j = 0; j < headers.length; j++) {
-                    formato_xml += "\n\t<" + headers[j] + ">" + data_show[j] + "</" + headers[j] + ">";
+                if (i == 0) {
+                   formato_xml += "\n\t<detalle>"; 
+                } else {
+                    formato_xml += "\n\t</detalle>\n\t<detalle>";
                 }
-                //System.out.println(headers[i]);
-                //System.out.println(data_file[i]);
-
+                for (int j = 0; j < headers.length; j++) {
+                    formato_xml += "\n\t\t<" + headers[j] + ">" + data_show[j] + "</" + headers[j] + ">";
+                }
             }
-            formato_xml += "\n</project>";
-            System.out.println(formato_xml);
+            formato_xml += "\n\t</detalle>\n</documento>";
+            System.out.println("Contenido del Archivo:\n" + formato_xml);
+            CrearArchivoXML(formato_xml, "ruta carpeta salida");
 
-//            while (null != linea) {
-//                String[] cabeza;
-//                cabeza = linea.split(separador);
-//
-//                for (int i = 0; i < cabeza.length; i++) {
-//                    cabecera.AgregarElementoAlInicio(cabeza[i].toString());
-//                }
-//
-//                linea = br.readLine();
-//                cabecera.setSiguiente(cabecera);
-//                cuenta++;
-//
-//                if (ListaVacia()) {
-//                    cabecera = cabecera;
-//                } else {
-//                    cabecera.setAnterior(cabecera);
-//                    cabecera = cabecera;
-//                }
-//            }
-            //cabecera.Imprimir();
-            //cant = Cantidad();
-            // convertirAXML(nombre, nuevo, cant);
-        } catch (Exception e) {
+        } catch (IOException e) {
+            System.out.println("Error LeerCSV: " + e.getMessage());
         } finally {
             if (null != br) {
                 br.close();
@@ -131,17 +110,8 @@ public class GestionDocumento {
         array[i] = null;
     }
 
-    public int quantityLines(BufferedReader file) {
-
-        return 0;
-    }
-
     public boolean ListaVacia() {
-        if (cabeza == null) {
-            return true;
-        } else {
-            return false;
-        }
+        return cabeza == null;
     }
 
     //Hay un error en este método porque siempre muestra el último nodo
@@ -154,6 +124,24 @@ public class GestionDocumento {
             cant++;
         }
         return cant;
+    }
+    
+    public void CrearArchivoXML(String contenido, String ruta){
+        try {
+            ruta = ruta.replace("csv", "xml");
+            File file = new File(ruta);
+            // si no existe el archivo lo creamos
+            if (!file.exists()){
+                file.createNewFile();
+            }
+            FileWriter fw = new FileWriter(file);
+            try (BufferedWriter bw = new BufferedWriter(fw)) {
+                bw.write(contenido);
+                System.out.println("Archivo creado correctamente Ruta: " + ruta);
+            }
+        }catch (IOException e) {
+            System.out.println("Error CrearArchivoXML: " + e.getMessage());
+        }
     }
 
     public void convertirAXML(String nombreArchivo, PilaArchivosLlegada filas, int cant) {
