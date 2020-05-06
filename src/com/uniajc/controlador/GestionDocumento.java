@@ -29,7 +29,7 @@ public class GestionDocumento {
     String[][] dimension = null;
     int cant = 0;
     String nombre = "SOLCANMA";
-    private String ruta_salida = "src\\DocumentoLlegda\\CarpetaComun";
+    private String ruta_salida = "src\\DocumentoSalida";
 
     public void ApilarDocumento() throws IOException {
         PilaArchivosLlegada pilar = new PilaArchivosLlegada();
@@ -44,17 +44,55 @@ public class GestionDocumento {
 
                 String nombre = listado[i].getName();
                 pilar.AgregarElementoAlInicio(nombre);
-            }
 
+            }
+            enviarNombre(pilar);
             //pilar.Imprimir();
-            LeerCsv();
+
         }
     }
 
-    public void LeerCsv() throws IOException {
-        String nombrecompleto = "SOLCANMA03052020162445.csv";
-        //String nombrecorto = String.valueOf(nombrecompleto.split("_"));
+    public void enviarNombre(PilaArchivosLlegada pilar) throws IOException {
+        int cant = pilar.CantidadElementos();
+        for (int i = 0; i < cant; i++) {
+            String nombreCompleto = pilar.Extraer();
+            String nombreCarpeta = nombreCompleto;
+            String[] nombreCar = nombreCarpeta.split("_");
+            switch (nombreCar[0]) {
+                case "SOLI":
+                    // code block
+                    ruta_salida = "src\\DocumentoSalida\\XML_SOLI";
+                    break;
+                case "SOLMAFI":
+                    // code block
+                    ruta_salida = "src\\DocumentoSalida\\XML_SOLMAFI";
+                    break;
+                case "SOLMAAC":
+                    // code block
+                    ruta_salida = "src\\DocumentoSalida\\XML_SOLMAAC";
+                    break;
+                case "SOLGRA":
+                    // code block
+                    ruta_salida = "src\\DocumentoSalida\\XML_SOLGRA";
+                    break;
+                case "SOLCREES":
+                    // code block
+                    ruta_salida = "src\\DocumentoSalida\\XML_SOLCREES";
+                    break;
+                case "SOLCANMA":
+                    // code block
+                    ruta_salida = "src\\DocumentoSalida\\XML_SOLCANMA";
+                    break;
+                default:
+                // code block
+                    
+            }
+            LeerCsv(nombreCompleto);
+        }
+    }
 
+    public void LeerCsv(String nombrecompleto) throws IOException {
+        //String nombrecompleto = "SOLCANMA03052020162445.csv";
         try {
             br = new BufferedReader(new FileReader("src\\DocumentoLlegda\\CarpetaComun\\" + nombrecompleto));
             String linea = br.readLine();
@@ -82,7 +120,7 @@ public class GestionDocumento {
             for (int i = 0; i < data_file.length - 1; i++) {
                 data_show = data_file[i].split(separador);
                 if (i == 0) {
-                   formato_xml += "\n\t<detalle>"; 
+                    formato_xml += "\n\t<detalle>";
                 } else {
                     formato_xml += "\n\t</detalle>\n\t<detalle>";
                 }
@@ -92,8 +130,9 @@ public class GestionDocumento {
             }
             formato_xml += "\n\t</detalle>\n</documento>";
             System.out.println("Contenido del Archivo:\n" + formato_xml);
-            ruta_salida += "\\" + nombrecompleto;
-            CrearArchivoXML(formato_xml, ruta_salida);
+            String ruta_dos = ruta_salida + "\\" + nombrecompleto;
+            //ruta_salida += "\\" + nombrecompleto;
+            CrearArchivoXML(formato_xml, ruta_dos);
 
         } catch (IOException e) {
             System.out.println("Error LeerCSV: " + e.getMessage());
@@ -127,13 +166,13 @@ public class GestionDocumento {
         }
         return cant;
     }
-    
-    public void CrearArchivoXML(String contenido, String ruta){
+
+    public void CrearArchivoXML(String contenido, String ruta) {
         try {
             ruta = ruta.replace("csv", "xml");
             File file = new File(ruta);
             // si no existe el archivo lo creamos
-            if (!file.exists()){
+            if (!file.exists()) {
                 file.createNewFile();
             }
             FileWriter fw = new FileWriter(file);
@@ -141,7 +180,7 @@ public class GestionDocumento {
                 bw.write(contenido);
                 System.out.println("Archivo creado correctamente Ruta: " + ruta);
             }
-        }catch (IOException e) {
+        } catch (IOException e) {
             System.out.println("Error CrearArchivoXML: " + e.getMessage());
         }
     }

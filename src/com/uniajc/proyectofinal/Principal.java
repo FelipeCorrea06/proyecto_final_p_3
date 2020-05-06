@@ -40,8 +40,8 @@ public class Principal {
     public static void main(String[] args) throws IOException {
         // TODO code application logic here
         GestionDocumento gest = new GestionDocumento();
-        //gest.ApilarDocumento();
-        gest.LeerCsv();
+        gest.ApilarDocumento();
+        //gest.LeerCsv();
 
     }
 

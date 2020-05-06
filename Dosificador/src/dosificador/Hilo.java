@@ -50,7 +50,7 @@ public class Hilo extends Thread {
                         SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyyyHHmmss");
                         InputStream in = new FileInputStream(listado[i]);
                         String nombre = listado[i].getName();
-                        nombre = nombre.replace(".", formatter.format(fecha) + ".");
+                        nombre = nombre.replace(".","_"+ formatter.format(fecha) + ".");
                         File archivoNuevo = new File(nombre);
                         OutputStream out = new FileOutputStream(rutaLlegada + "\\" + archivoNuevo);
 

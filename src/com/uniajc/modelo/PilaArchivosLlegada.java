@@ -47,6 +47,20 @@ public class PilaArchivosLlegada {
             return false;
         }
     }
+    
+     public String Extraer()
+        {
+            if (cabeza != null)
+            {
+                String informacion = cabeza.getNombre();
+                cabeza = cabeza.siguiente;
+                return informacion;
+            }
+            else
+            {
+                return "Nada";
+            }
+        }
 
     public void AgregarElementoAlInicio(String value) {
         PilaArchivosLlegada nuevo = new PilaArchivosLlegada();

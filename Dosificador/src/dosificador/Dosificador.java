@@ -18,6 +18,13 @@ public class Dosificador {
         // TODO code application logic here
         Hilo hilo = new Hilo();
         hilo.start();   
+        try{
+          Thread.sleep(10000);  
+          hilo.stop();
+        }catch(Exception e){
+            System.out.println("Hilo principal error: "+e.getMessage());
+        }
+        
     }
     
 }
