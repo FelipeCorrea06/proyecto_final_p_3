@@ -86,7 +86,7 @@ public class GestionDocumento {
                     break;
                 default:
                 // code block
-                    
+
             }
             LeerCsv(nombreCompleto);
         }
@@ -113,7 +113,7 @@ public class GestionDocumento {
                 cont++;
             }
             String[] data_show = new String[headers.length];
-            String formato_xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"; 
+            String formato_xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n";
             formato_xml += "<documento>";
             // eliminamos la primera fila que contiene la cabecera
             removeIndex(data_file, 0);
@@ -142,28 +142,63 @@ public class GestionDocumento {
             }
         }
     }
-    
-    public void CrearXMLCanonico(String formato_xml){
+
+    public void CrearXMLCanonico(String formato_xml) {
         Nodo nodo = new Nodo();
         OperacionDocumento od = new OperacionDocumento();
-        
+        // Eliminamos el tag para los registros
+        formato_xml = formato_xml.replace("\n", "");
+        formato_xml = od.EliminarEtiqueta("documento", formato_xml);
+        formato_xml = od.EliminarEtiqueta("detalle", formato_xml);
         // separar llaves xml
-        String [] lineas_xml = formato_xml.split("\n");
-        // omitimos las 3 primeras lineas
-        // eliminamos las identaciones del formato
-        String [] xml_sin_identacion = new String[lineas_xml.length - 5];
+        String[] lineas_xml = formato_xml.split("\n");
+        String[] xml_sin_identacion = null;
         int pos = 0;
-        for (int i = 3; i < lineas_xml.length - 2; i++) {
-            xml_sin_identacion[pos] = od.EliminarIdentacion(lineas_xml[i]);
+        for (int i = 0; i < lineas_xml.length; i++) {
+            xml_sin_identacion = od.EliminarIdentacion(lineas_xml[i]);
             pos++;
         }
+        
         // obtenemos las claves
-        String [] claves_xml = new String[xml_sin_identacion.length];
-        for(int i= 0; i<xml_sin_identacion.length; i++){
+        String[] claves_xml = new String[xml_sin_identacion.length];
+        for (int i = 0; i < xml_sin_identacion.length; i++) {
             claves_xml[i] = od.ObtenerClave(xml_sin_identacion[i]);
+            if (!nodo.ListaVacia()) {
+                if (!nodo.ValidarNombre(claves_xml[i])) {
+                    nodo.AgregarAlFinal(claves_xml[i]);
+                }
+            } else {
+                nodo.AgregarAlInicio(od.ObtenerClave(xml_sin_identacion[i]));
+            }
         }
-        
-        
+
+        // guardamos las titulos en el nodo
+        // armamos el contenido del archivo canonico
+        String canonico = lineas_xml[0];
+        System.out.println("Estructura Canonico XML");
+        canonico += "\n<canonico>";
+        canonico += "\n\t<detalle>";
+        int resultado = 0;
+        Nodo reco = nodo.cabeza;
+        for (int i = 0; i < nodo.CantidadElementos(); i++) {
+            if (i < lineas_xml.length) {
+                resultado = lineas_xml[i + 3].indexOf(reco.getNombre());
+            } else {
+                resultado = -1;
+            }
+
+            if (resultado != -1) {
+                canonico += "\n" + lineas_xml[i + 3];
+            } else {
+                canonico += "\n\t\t<" + reco.getNombre() + "></" + reco.getNombre() + ">";
+            }
+            reco = reco.getSiguiente();
+        }
+        canonico += "\n\t<detalle>";
+        canonico += "\n<canonico>";
+
+        System.out.println(canonico);
+
     }
 
     public void removeIndex(String[] array, int index) {
@@ -207,8 +242,5 @@ public class GestionDocumento {
             System.out.println("Error CrearArchivoXML: " + e.getMessage());
         }
     }
-    
-
-   
 
 }
