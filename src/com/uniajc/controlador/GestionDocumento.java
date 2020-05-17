@@ -5,6 +5,7 @@
  */
 package com.uniajc.controlador;
 
+import com.uniajc.modelo.Nodo;
 import com.uniajc.modelo.PilaArchivosLlegada;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -30,11 +31,11 @@ public class GestionDocumento {
     int cant = 0;
     String nombre = "SOLCANMA";
     private String ruta_salida = "src\\DocumentoSalida";
+    private String ruta_comun = "src\\DocumentoLlegda\\CarpetaComun";
 
     public void ApilarDocumento() throws IOException {
         PilaArchivosLlegada pilar = new PilaArchivosLlegada();
-        String rutaLlegada = "src\\DocumentoLlegda\\CarpetaComun";
-        File carpeta = new File(rutaLlegada);
+        File carpeta = new File(ruta_comun);
         File[] listado = carpeta.listFiles();
         if (listado == null || listado.length == 0) {
             System.out.println("No hay elementos dentro de la carpeta actual");
@@ -92,12 +93,10 @@ public class GestionDocumento {
     }
 
     public void LeerCsv(String nombrecompleto) throws IOException {
-        //String nombrecompleto = "SOLCANMA03052020162445.csv";
         try {
-            br = new BufferedReader(new FileReader("src\\DocumentoLlegda\\CarpetaComun\\" + nombrecompleto));
+            br = new BufferedReader(new FileReader(ruta_comun + "\\" + nombrecompleto));
             String linea = br.readLine();
             String[] headers = linea.split(separador);
-
             int numLines = 0;
             while (linea != null) {
                 linea = br.readLine();
@@ -106,7 +105,7 @@ public class GestionDocumento {
 
             String[] data_file = new String[numLines];
             int cont = 0;
-            br = new BufferedReader(new FileReader("src\\DocumentoLlegda\\CarpetaComun\\" + nombrecompleto));
+            br = new BufferedReader(new FileReader(ruta_comun + "\\" + nombrecompleto));
             linea = br.readLine();
             while (linea != null) {
                 data_file[cont] = linea.toString();
@@ -114,7 +113,8 @@ public class GestionDocumento {
                 cont++;
             }
             String[] data_show = new String[headers.length];
-            String formato_xml = "<documento>";
+            String formato_xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"; 
+            formato_xml += "<documento>";
             // eliminamos la primera fila que contiene la cabecera
             removeIndex(data_file, 0);
             for (int i = 0; i < data_file.length - 1; i++) {
@@ -129,11 +129,11 @@ public class GestionDocumento {
                 }
             }
             formato_xml += "\n\t</detalle>\n</documento>";
-            System.out.println("Contenido del Archivo:\n" + formato_xml);
+            //System.out.println("Contenido del Archivo:\n" + formato_xml);
             String ruta_dos = ruta_salida + "\\" + nombrecompleto;
-            //ruta_salida += "\\" + nombrecompleto;
             CrearArchivoXML(formato_xml, ruta_dos);
-
+            // crear archivo xml canonico
+            CrearXMLCanonico(formato_xml);
         } catch (IOException e) {
             System.out.println("Error LeerCSV: " + e.getMessage());
         } finally {
@@ -141,6 +141,29 @@ public class GestionDocumento {
                 br.close();
             }
         }
+    }
+    
+    public void CrearXMLCanonico(String formato_xml){
+        Nodo nodo = new Nodo();
+        OperacionDocumento od = new OperacionDocumento();
+        
+        // separar llaves xml
+        String [] lineas_xml = formato_xml.split("\n");
+        // omitimos las 3 primeras lineas
+        // eliminamos las identaciones del formato
+        String [] xml_sin_identacion = new String[lineas_xml.length - 5];
+        int pos = 0;
+        for (int i = 3; i < lineas_xml.length - 2; i++) {
+            xml_sin_identacion[pos] = od.EliminarIdentacion(lineas_xml[i]);
+            pos++;
+        }
+        // obtenemos las claves
+        String [] claves_xml = new String[xml_sin_identacion.length];
+        for(int i= 0; i<xml_sin_identacion.length; i++){
+            claves_xml[i] = od.ObtenerClave(xml_sin_identacion[i]);
+        }
+        
+        
     }
 
     public void removeIndex(String[] array, int index) {
@@ -184,15 +207,8 @@ public class GestionDocumento {
             System.out.println("Error CrearArchivoXML: " + e.getMessage());
         }
     }
+    
 
-    public void convertirAXML(String nombreArchivo, PilaArchivosLlegada filas, int cant) {
-        Date fecha = new Date();
-
-        for (int i = 0; i < cant; i++) {
-            System.out.println(" Creación XML: ");
-            System.out.println(filas.getNombre());
-            filas.setAnterior(cabeza);
-        }
-    }
+   
 
 }
