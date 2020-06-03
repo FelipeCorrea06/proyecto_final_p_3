@@ -10,10 +10,11 @@ package com.uniajc.modelo;
  * @author Felipe Medel
  */
 public class Nodo {
+
     private String nombre;
     private Nodo siguiente, anterior;
     public Nodo cabeza;
-    
+
     public boolean ListaVacia() {
         boolean response = false;
         if (cabeza == null) {
@@ -21,7 +22,7 @@ public class Nodo {
         }
         return response;
     }
-    
+
     public void AgregarAlInicio(String value) {
         Nodo nuevo = new Nodo();
         nuevo.setNombre(value);
@@ -54,17 +55,15 @@ public class Nodo {
             ultimo.setSiguiente(nuevo);
         }
     }
-    
-    public boolean ValidarNombre(String nombre){
+
+    public boolean ValidarNombre(String nombre, int cant) {
         boolean exist = false;
         if (!ListaVacia()) {
             Nodo reco = cabeza;
-            while (reco != null) {
+            for (int i = 0; i < cant; i++) {
                 if (reco.getNombre().equals(nombre)) {
-                    exist = true;
                     reco = null;
-                } else {
-                    reco = reco.getSiguiente();
+                    return exist = true;
                 }
             }
         } else {
@@ -76,7 +75,7 @@ public class Nodo {
     public void Imprimir() {
         if (!ListaVacia()) {
             Nodo reco = cabeza;
-            while(reco != null) {
+            while (reco != null) {
                 System.out.print(reco.getNombre() + " - ");
                 reco = reco.getSiguiente();
             }
@@ -90,7 +89,7 @@ public class Nodo {
         int cant = 0;
         if (!ListaVacia()) {
             Nodo reco = cabeza;
-            while(reco != null) {
+            while (reco != null) {
                 cant++;
                 reco = reco.getSiguiente();
             }
@@ -121,6 +120,5 @@ public class Nodo {
     public void setAnterior(Nodo Anterior) {
         this.anterior = Anterior;
     }
-    
-    
+
 }
