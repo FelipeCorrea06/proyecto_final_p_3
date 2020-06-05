@@ -6,8 +6,7 @@
 package com.uniajc.controlador;
 
 import com.uniajc.modelo.Nodo;
-import com.uniajc.modelo.Pila;
-import com.uniajc.modelo.canonico;
+import com.uniajc.modelo.Cola;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -24,10 +23,13 @@ import java.util.Date;
 public class GestionDocumento {
 
     public static final String separador = ";";
+    public Cola alta = new Cola();
+    public Cola media = new Cola();
+    public Cola baja = new Cola();
     //public static final String quote = "\"";
     //public static int cuenta = 0;
 
-    private Pila cabeza;
+    private Cola cabeza;
     BufferedReader br = null;
     String[][] dimension = null;
     int cant = 0;
@@ -35,9 +37,9 @@ public class GestionDocumento {
     private String ruta_salida = "src\\DocumentoSalida";
     private String ruta_comun = "src\\DocumentoLlegda\\CarpetaComun";
 
-    public ArrayList<canonico> ApilarDocumento() throws IOException {
+    public ArrayList<String> ApilarDocumento() throws IOException {
         ArrayList<String> ruta_nombre = new ArrayList<>();
-        Pila pilar = new Pila();
+        Cola pilar = new Cola();
         File carpeta = new File(ruta_comun);
         File[] listado = carpeta.listFiles();
         if (listado == null || listado.length == 0) {
@@ -49,7 +51,7 @@ public class GestionDocumento {
                 pilar.AgregarElementoAlInicio(nombre);
 
             }
-           // ruta_nombre = enviarNombre(pilar);
+            // ruta_nombre = enviarNombre(pilar);
             enviarNombre(pilar);
             //pilar.Imprimir();
 
@@ -57,7 +59,7 @@ public class GestionDocumento {
         return null;
     }
 
-    public ArrayList<String> enviarNombre(Pila pilar) throws IOException {
+    public ArrayList<String> enviarNombre(Cola pilar) throws IOException {
         int cant = pilar.CantidadElementos();
         ArrayList<String> ruta_nombre = new ArrayList<>();
         for (int i = 0; i < cant; i++) {
@@ -96,8 +98,9 @@ public class GestionDocumento {
                     //ruta_nombre.add(ruta_salida);
                     break;
                 default:
-                    // code block
+                // code block
             }
+            //ruta_nombre = LeerCsv(nombreCompleto);
             LeerCsv(nombreCompleto);
         }
         return ruta_nombre;
@@ -145,6 +148,7 @@ public class GestionDocumento {
             String ruta_dos = ruta_salida + "\\" + nombrecompleto;
             CrearArchivoXML(formato_xml, ruta_dos);
             // crear archivo xml canonico
+            //ruta_ nombre = CrearXMLCanonicoFijo(formato_xml);
             CrearXMLCanonicoFijo(formato_xml);
         } catch (IOException e) {
             System.out.println("Error LeerCSV: " + e.getMessage());
@@ -198,7 +202,7 @@ public class GestionDocumento {
     public void CrearXMLCanonico(String formato_xml) {
         try {
 
-            Pila nodo = new Pila();
+            Cola nodo = new Cola();
             OperacionDocumento od = new OperacionDocumento();
             // Eliminamos el tag para los registros
             formato_xml = formato_xml.replace("\n", "");
@@ -242,7 +246,7 @@ public class GestionDocumento {
             canonico += "\n<canonico>";
             canonico += "\n\t<detalle>";
             int resultado = 0;
-            Pila reco = nodo.cabeza;
+            Cola reco = nodo.cabeza;
             for (int i = 0; i < lineas_xml.length; i++) {
                 if (i < lineas_xml.length) {
                     resultado = lineas_xml[i + 3].indexOf(reco.getNombre());
@@ -283,7 +287,7 @@ public class GestionDocumento {
     //y se queda infinitamente en el while.
     public int Cantidad() {
         int cant = 0;
-        Pila reco = cabeza;
+        Cola reco = cabeza;
         while (reco != null) {
             reco = reco.getSiguiente();
             cant++;
@@ -308,6 +312,44 @@ public class GestionDocumento {
         } catch (IOException e) {
             System.out.println("Error CrearArchivoXML: " + e.getMessage());
         }
+    }
+
+    //Método que guarda el archivo xml a la cola de prioridad
+    public void colaPrioridad(String nombre_canonico) {
+        try {
+            String[] nombreArchivo = nombre_canonico.split("_");
+            switch (nombreArchivo[0]) {
+                case "SOLI":
+                    // code block
+                        alta.AgregarElementoAlInicio(nombre_canonico);
+                    break;
+                case "SOLMAFI":
+                    // code block
+                        alta.AgregarElementoAlInicio(nombre_canonico);
+                    break;
+                case "SOLMAAC":
+                    // code block
+                        alta.AgregarElementoAlInicio(nombre_canonico);
+                    break;
+                case "SOLGRA":
+                    // code block
+                        media.AgregarElementoAlInicio(nombre_canonico);
+                    break;
+                case "SOLCREES":
+                    // code block
+                        media.AgregarElementoAlInicio(nombre_canonico);
+                    break;
+                case "SOLCANMA":
+                    // code block
+                        baja.AgregarElementoAlInicio(nombre_canonico);
+                    break;
+                default:
+                // code block
+                }
+        } catch (Exception e) {
+            System.out.println("Error general al crear las colas");
+        }
+
     }
 
 }

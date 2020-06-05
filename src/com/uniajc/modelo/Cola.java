@@ -9,10 +9,10 @@ package com.uniajc.modelo;
  *
  * @author lfcr0843
  */
-public class Pila {
+public class Cola {
 
     String nombre;
-    Pila siguiente, anterior;
+    Cola siguiente, anterior;
 
     public String getNombre() {
         return nombre;
@@ -22,23 +22,23 @@ public class Pila {
         this.nombre = nombre;
     }
 
-    public Pila getSiguiente() {
+    public Cola getSiguiente() {
         return siguiente;
     }
 
-    public void setSiguiente(Pila siguiente) {
+    public void setSiguiente(Cola siguiente) {
         this.siguiente = siguiente;
     }
 
-    public Pila getAnterior() {
+    public Cola getAnterior() {
         return anterior;
     }
 
-    public void setAnterior(Pila anterior) {
+    public void setAnterior(Cola anterior) {
         this.anterior = anterior;
     }
 
-    public Pila cabeza;
+    public Cola cabeza;
 
     public boolean ListaVacia() {
         if (cabeza == null) {
@@ -63,14 +63,14 @@ public class Pila {
         }
 
     public void AgregarElementoAlInicio(String value) {
-        Pila nuevo = new Pila();
+        Cola nuevo = new Cola();
         nuevo.setNombre(value);
         if (cabeza == null) {
             nuevo.setSiguiente(nuevo);
             nuevo.setAnterior(nuevo);
             cabeza = nuevo;
         } else {
-            Pila ultimo = cabeza.getAnterior();
+            Cola ultimo = cabeza.getAnterior();
             nuevo.setSiguiente(cabeza);
             nuevo.setAnterior(ultimo);
             cabeza.setAnterior(nuevo);
@@ -82,14 +82,14 @@ public class Pila {
 
     public void AgregarElementoAlFinal(String value) {
         try {
-             Pila nuevo = new Pila();
+             Cola nuevo = new Cola();
         nuevo.setNombre(value);
         if (cabeza == null) {
             nuevo.setSiguiente(nuevo);
             nuevo.setAnterior(nuevo);
             cabeza = nuevo;
         } else {
-            Pila ultimo = cabeza.getAnterior();
+            Cola ultimo = cabeza.getAnterior();
             nuevo.setSiguiente(cabeza);
             nuevo.setAnterior(ultimo);
             cabeza.setAnterior(ultimo);
@@ -97,14 +97,14 @@ public class Pila {
         }
             
         } catch (Exception e) {
-            System.out.println("Error en agregar al final en PilarArchivos: "+e.getMessage());
+            System.out.println("Error en agregar al final en ColarArchivos: "+e.getMessage());
         }
        
     }
 
     public void Imprimir() {
         if (!ListaVacia()) {
-            Pila reco = cabeza;
+            Cola reco = cabeza;
             do {
                 System.out.println(reco.getNombre() + "->");
                 reco = reco.getSiguiente();
@@ -116,7 +116,7 @@ public class Pila {
     public int CantidadElementos() {
         int cant = 0;
         if (!ListaVacia()) {
-            Pila reco = cabeza;
+            Cola reco = cabeza;
             do {
                 cant++;
                 reco = reco.getSiguiente();
@@ -129,7 +129,7 @@ public class Pila {
      public boolean ValidarNombre(String nombre, int cant) {
         boolean exist = false;
         if (!ListaVacia()) {
-            Pila reco = cabeza;
+            Cola reco = cabeza;
             for (int i = 0; i < cant; i++) {
                 if (reco.getNombre().equals(nombre)) {
                     reco = null;
@@ -145,14 +145,14 @@ public class Pila {
     /* Se comento porque de aquí vamos a sacar el código de eliminar 
         public void EliminarPorPosicion(int pos)
         {
-                Pila reco = cabeza;
+                Cola reco = cabeza;
                 int can = CantidadElementos();
                 for (int f = 1; f <= can - 1; f++)
                 {
                 if (pos == cabeza.ID)
                 {
                     cabeza = reco.Anterior;
-                    Pila anterior1 = reco.Anterior;
+                    Cola anterior1 = reco.Anterior;
                     reco = reco.Siguiente;
                     anterior1.Siguiente = reco;
                     reco.Anterior = anterior1;
@@ -164,7 +164,7 @@ public class Pila {
                     {
                         
                         cabeza = reco.Anterior;
-                        Pila anterior = reco.Anterior;
+                        Cola anterior = reco.Anterior;
                         reco = reco.Siguiente;
                         anterior.Siguiente = reco;
                         reco.Anterior = anterior;
@@ -174,8 +174,8 @@ public class Pila {
                 }
         }
      */
-    public Pila EncontrarElemento(int pos, int sentido) {
-        Pila reco = cabeza;
+    public Cola EncontrarElemento(int pos, int sentido) {
+        Cola reco = cabeza;
         for (int i = 0; i < pos; i++) {
             if (sentido == 0) {
                 reco = reco.getSiguiente();

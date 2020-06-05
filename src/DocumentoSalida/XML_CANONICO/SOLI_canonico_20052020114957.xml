@@ -1,0 +1,20 @@
+<documento>
+	<detalle>
+		<Identificacion></Identificacion>
+		<Nombres></Nombres>
+		<Apellidos></Apellidos>
+		<Celular></Celular>
+		<Correo></Correo>
+		<Semestre></Semestre>
+		<Ciudad></Ciudad>
+		<Direccion></Direccion>
+		<Natalicio></Natalicio>
+		<Sede></Sede>
+		<AnioGrado></AnioGrado>
+		<Falcultad> </Falcultad>
+		<MateriaCantidad></MateriaCantidad>
+		<Homologacion></Homologacion>
+		<Valor></Valor>
+		<Descuentos></Descuentos>
+	</detalle>
+</documento>
