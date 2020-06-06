@@ -7,7 +7,10 @@ package com.uniajc.proyectofinal;
 
 import com.uniajc.controlador.ColaPrioridad;
 import com.uniajc.controlador.GestionDocumento;
+import com.uniajc.controlador.Hilo;
 import com.uniajc.modelo.Cola;
+import com.uniajc.modelo.ListaEnlazadaDoble;
+import com.uniajc.modelo.Nodo;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -25,38 +28,27 @@ public class Principal {
      */
     public static void main(String[] args) throws IOException {
         // TODO code application logic here
-        ArrayList<String> ruta_nombre = new ArrayList<>();
 
         GestionDocumento gest = new GestionDocumento();
-       // ruta_nombre = gest.ApilarDocumento();
+        gest.ApilarDocumento();
+        System.out.println("Cola Alta= ");
+        gest.alta.imprimir();
+        System.out.println("Cola Media= ");
+        gest.media.imprimir();
+        System.out.println("Cola Baja= ");
+        gest.baja.imprimir();
 
-        gest.colaPrioridad("SOLCANMA_canonico_20052020114957.xml");
-        gest.colaPrioridad("SOLCREES_canonico_20052020114957.xml");
-        gest.colaPrioridad("SOLGRA_canonico_20052020114957.xml");
-        gest.colaPrioridad("SOLI_canonico_20052020114947.xml");
-        gest.colaPrioridad("SOLI_canonico_20052020114957.xml");
-        gest.colaPrioridad("SOLI_canonico_20052020114958.xml");
-        gest.colaPrioridad("SOLMAAC_canonico_20052020114957.xml");
-        gest.colaPrioridad("SOLMAFI_canonico_20052020114957.xml");
-        System.out.println("Cola alta: ------>");
-        gest.alta.Imprimir();
-        System.out.println("Cola media: ------>");
-        gest.media.Imprimir();
-        System.out.println("Cola baja: ------>");
-        gest.baja.Imprimir();
+        Hilo hilo = new Hilo();
+        hilo.obtenerColas(gest.alta, gest.media, gest.baja);
 
-        /*  ColaPrioridad hilo = new ColaPrioridad();
-         hilo.capturarValoresLista(ruta_nombre);
-        
-        
-         hilo.start();
-         try {
-         //Thread.sleep(30000);
-         //hilo.stop();
-         } catch (Exception e) {
-         System.out.println("Hilo principal error: " + e.getMessage());
-         }*/
-        //gest.LeerCsv("SOLCANMA_05052020195003.csv");
+        hilo.start();
+        try {
+            Thread.sleep(10000);
+            hilo.stop();
+        } catch (Exception e) {
+            System.out.println("Hilo principal del proyecto error : " + e.getMessage());
+        }
+
     }
 
 }

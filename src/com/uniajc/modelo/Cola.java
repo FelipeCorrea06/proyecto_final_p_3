@@ -47,20 +47,43 @@ public class Cola {
             return false;
         }
     }
-    
-     public String Extraer()
-        {
-            if (cabeza != null)
-            {
-                String informacion = cabeza.getNombre();
-                cabeza = cabeza.siguiente;
-                return informacion;
+
+    public String Extraer() {
+        if (cabeza != null) {
+            String informacion = cabeza.getNombre();
+            cabeza = cabeza.siguiente;
+            return informacion;
+        } else {
+            return "Nada";
+        }
+    }
+
+    public void EliminarElementoDesdeLaCabeza() {
+        if (!ListaVacia()) {
+            cabeza = cabeza.getSiguiente();
+        }
+    }
+
+    public void EliminarElementoDesdeElFinal() {
+        int counter = 0;
+        if (!ListaVacia()) {
+            Cola recorrido = cabeza;
+            Cola referencia = new Cola();
+            while (recorrido != null) {
+                if (recorrido.getSiguiente() != null) {
+                    referencia = recorrido;
+                }
+                recorrido = recorrido.getSiguiente();
+                counter++;
             }
-            else
-            {
-                return "Nada";
+            if (counter == 1) {
+                cabeza = null;
+            } else {
+                referencia.setSiguiente(null);
+                recorrido = referencia;
             }
         }
+    }
 
     public void AgregarElementoAlInicio(String value) {
         Cola nuevo = new Cola();
@@ -82,24 +105,24 @@ public class Cola {
 
     public void AgregarElementoAlFinal(String value) {
         try {
-             Cola nuevo = new Cola();
-        nuevo.setNombre(value);
-        if (cabeza == null) {
-            nuevo.setSiguiente(nuevo);
-            nuevo.setAnterior(nuevo);
-            cabeza = nuevo;
-        } else {
-            Cola ultimo = cabeza.getAnterior();
-            nuevo.setSiguiente(cabeza);
-            nuevo.setAnterior(ultimo);
-            cabeza.setAnterior(ultimo);
-            ultimo.setSiguiente(nuevo);
-        }
-            
+            Cola nuevo = new Cola();
+            nuevo.setNombre(value);
+            if (cabeza == null) {
+                nuevo.setSiguiente(nuevo);
+                nuevo.setAnterior(nuevo);
+                cabeza = nuevo;
+            } else {
+                Cola ultimo = cabeza.getAnterior();
+                nuevo.setSiguiente(cabeza);
+                nuevo.setAnterior(ultimo);
+                cabeza.setAnterior(nuevo);
+                ultimo.setSiguiente(nuevo);
+            }
+
         } catch (Exception e) {
-            System.out.println("Error en agregar al final en ColarArchivos: "+e.getMessage());
+            System.out.println("Error en agregar al final en ColarArchivos: " + e.getMessage());
         }
-       
+
     }
 
     public void Imprimir() {
@@ -124,9 +147,8 @@ public class Cola {
         }
         return cant;
     }
-    
-    
-     public boolean ValidarNombre(String nombre, int cant) {
+
+    public boolean ValidarNombre(String nombre, int cant) {
         boolean exist = false;
         if (!ListaVacia()) {
             Cola reco = cabeza;
@@ -143,36 +165,36 @@ public class Cola {
     }
 
     /* Se comento porque de aquí vamos a sacar el código de eliminar 
-        public void EliminarPorPosicion(int pos)
-        {
-                Cola reco = cabeza;
-                int can = CantidadElementos();
-                for (int f = 1; f <= can - 1; f++)
-                {
-                if (pos == cabeza.ID)
-                {
-                    cabeza = reco.Anterior;
-                    Cola anterior1 = reco.Anterior;
-                    reco = reco.Siguiente;
-                    anterior1.Siguiente = reco;
-                    reco.Anterior = anterior1;
+     public void EliminarPorPosicion(int pos)
+     {
+     Cola reco = cabeza;
+     int can = CantidadElementos();
+     for (int f = 1; f <= can - 1; f++)
+     {
+     if (pos == cabeza.ID)
+     {
+     cabeza = reco.Anterior;
+     Cola anterior1 = reco.Anterior;
+     reco = reco.Siguiente;
+     anterior1.Siguiente = reco;
+     reco.Anterior = anterior1;
 
-                }
+     }
 
-                reco = reco.Siguiente;
-                    if (pos == reco.ID)
-                    {
+     reco = reco.Siguiente;
+     if (pos == reco.ID)
+     {
                         
-                        cabeza = reco.Anterior;
-                        Cola anterior = reco.Anterior;
-                        reco = reco.Siguiente;
-                        anterior.Siguiente = reco;
-                        reco.Anterior = anterior;
+     cabeza = reco.Anterior;
+     Cola anterior = reco.Anterior;
+     reco = reco.Siguiente;
+     anterior.Siguiente = reco;
+     reco.Anterior = anterior;
                      
-                    }
+     }
 
-                }
-        }
+     }
+     }
      */
     public Cola EncontrarElemento(int pos, int sentido) {
         Cola reco = cabeza;

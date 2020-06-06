@@ -5,8 +5,9 @@
  */
 package com.uniajc.controlador;
 
-import com.uniajc.modelo.Nodo;
+
 import com.uniajc.modelo.Cola;
+import com.uniajc.modelo.ListaEnlazadaDoble;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -23,9 +24,9 @@ import java.util.Date;
 public class GestionDocumento {
 
     public static final String separador = ";";
-    public Cola alta = new Cola();
-    public Cola media = new Cola();
-    public Cola baja = new Cola();
+    public ListaEnlazadaDoble alta = new ListaEnlazadaDoble();
+    public ListaEnlazadaDoble media = new ListaEnlazadaDoble();
+    public ListaEnlazadaDoble baja = new ListaEnlazadaDoble();
     //public static final String quote = "\"";
     //public static int cuenta = 0;
 
@@ -34,10 +35,11 @@ public class GestionDocumento {
     String[][] dimension = null;
     int cant = 0;
     String nombre = "SOLCANMA";
-    private String ruta_salida = "src\\DocumentoSalida";
+    private String ruta_xml = "src\\DocumentoXML";
+    private String ruta_canonico = "src\\DocumentoXML\\XML_CANONICO";
     private String ruta_comun = "src\\DocumentoLlegda\\CarpetaComun";
 
-    public ArrayList<String> ApilarDocumento() throws IOException {
+    public void ApilarDocumento() throws IOException {
         ArrayList<String> ruta_nombre = new ArrayList<>();
         Cola pilar = new Cola();
         File carpeta = new File(ruta_comun);
@@ -51,17 +53,14 @@ public class GestionDocumento {
                 pilar.AgregarElementoAlInicio(nombre);
 
             }
-            // ruta_nombre = enviarNombre(pilar);
             enviarNombre(pilar);
-            //pilar.Imprimir();
+            pilar.Imprimir();
 
         }
-        return null;
     }
 
-    public ArrayList<String> enviarNombre(Cola pilar) throws IOException {
+    public void enviarNombre(Cola pilar) throws IOException {
         int cant = pilar.CantidadElementos();
-        ArrayList<String> ruta_nombre = new ArrayList<>();
         for (int i = 0; i < cant; i++) {
             String nombreCompleto = pilar.Extraer();
             String nombreCarpeta = nombreCompleto;
@@ -69,33 +68,51 @@ public class GestionDocumento {
             switch (nombreCar[0]) {
                 case "SOLI":
                     // code block
-                    ruta_salida = "src\\DocumentoSalida\\XML_SOLI";
-                    //ruta_nombre.add(ruta_salida);
+                    ruta_xml = "src\\DocumentoXML\\XML_SOLI";
+                    if (alta.ListaVacia()) {
+                        alta.AgregarElementoAlInicio(nombreCompleto.replace("csv", "xml"));
+                    }else
+                         alta.AgregarElementoAlFinal(nombreCompleto.replace("csv", "xml"));
                     break;
                 case "SOLMAFI":
                     // code block
-                    ruta_salida = "src\\DocumentoSalida\\XML_SOLMAFI";
-                    //ruta_nombre.add(ruta_salida);
+                    ruta_xml = "src\\DocumentoXML\\XML_SOLMAFI";
+                    if (alta.ListaVacia()) {
+                        alta.AgregarElementoAlInicio(nombreCompleto.replace("csv", "xml"));
+                    }else
+                         alta.AgregarElementoAlFinal(nombreCompleto.replace("csv", "xml"));
                     break;
                 case "SOLMAAC":
                     // code block
-                    ruta_salida = "src\\DocumentoSalida\\XML_SOLMAAC";
-                    //ruta_nombre.add(ruta_salida);
+                    ruta_xml = "src\\DocumentoXML\\XML_SOLMAAC";
+                    if (alta.ListaVacia()) {
+                        alta.AgregarElementoAlInicio(nombreCompleto.replace("csv", "xml"));
+                    }else
+                         alta.AgregarElementoAlFinal(nombreCompleto.replace("csv", "xml"));
                     break;
                 case "SOLGRA":
                     // code block
-                    ruta_salida = "src\\DocumentoSalida\\XML_SOLGRA";
-                    //ruta_nombre.add(ruta_salida);
+                    ruta_xml = "src\\DocumentoXML\\XML_SOLGRA";
+                    if (media.ListaVacia()) {
+                        media.AgregarElementoAlInicio(nombreCompleto.replace("csv", "xml"));
+                    }else
+                         media.AgregarElementoAlFinal(nombreCompleto.replace("csv", "xml"));
                     break;
                 case "SOLCREES":
                     // code block
-                    ruta_salida = "src\\DocumentoSalida\\XML_SOLCREES";
-                    //ruta_nombre.add(ruta_salida);
+                    ruta_xml = "src\\DocumentoXML\\XML_SOLCREES";
+                    if (media.ListaVacia()) {
+                        media.AgregarElementoAlInicio(nombreCompleto.replace("csv", "xml"));
+                    }else
+                         media.AgregarElementoAlFinal(nombreCompleto.replace("csv", "xml"));
                     break;
                 case "SOLCANMA":
                     // code block
-                    ruta_salida = "src\\DocumentoSalida\\XML_SOLCANMA";
-                    //ruta_nombre.add(ruta_salida);
+                    ruta_xml = "src\\DocumentoXML\\XML_SOLCANMA";
+                    if (baja.ListaVacia()) {
+                        baja.AgregarElementoAlInicio(nombreCompleto.replace("csv", "xml"));
+                    }else
+                         baja.AgregarElementoAlFinal(nombreCompleto.replace("csv", "xml"));
                     break;
                 default:
                 // code block
@@ -103,7 +120,6 @@ public class GestionDocumento {
             //ruta_nombre = LeerCsv(nombreCompleto);
             LeerCsv(nombreCompleto);
         }
-        return ruta_nombre;
     }
 
     public void LeerCsv(String nombrecompleto) throws IOException {
@@ -145,11 +161,12 @@ public class GestionDocumento {
             }
             formato_xml += "\n\t</detalle>\n</documento>";
             //System.out.println("Contenido del Archivo:\n" + formato_xml);
-            String ruta_dos = ruta_salida + "\\" + nombrecompleto;
-            CrearArchivoXML(formato_xml, ruta_dos);
+            String ruta_completa_xml = ruta_xml + "\\" + nombrecompleto;
+            String ruta_completa_salida = ruta_canonico + "\\" + nombrecompleto;
+            CrearArchivoXML(formato_xml, ruta_completa_xml);
             // crear archivo xml canonico
             //ruta_ nombre = CrearXMLCanonicoFijo(formato_xml);
-            CrearXMLCanonicoFijo(formato_xml);
+            CrearXMLCanonicoFijo(formato_xml,ruta_completa_salida);
         } catch (IOException e) {
             System.out.println("Error LeerCSV: " + e.getMessage());
         } finally {
@@ -159,118 +176,64 @@ public class GestionDocumento {
         }
     }
 
-    public ArrayList<String> CrearXMLCanonicoFijo(String formato_xml) {
-        ArrayList<String> ruta_nombre = new ArrayList<>();
-        try {
-            OperacionDocumento od = new OperacionDocumento();
-            formato_xml = od.EliminarEtiqueta("documento", formato_xml);
-            formato_xml = od.EliminarEtiqueta("detalle", formato_xml);
-            ArrayList<String> key = new ArrayList<>();
-            String[] lineas_xml = formato_xml.split("\n");
-            for (int i = 0; i < formato_xml.length(); i++) {
-                if (!lineas_xml[i].equals("") || !lineas_xml[i].equals("		")) {
-                    key.add(od.ObtenerClave(lineas_xml[i]));
-                    System.out.println(key.get(i));
+    public void CrearXMLCanonicoFijo(String formato_xml, String nombrecompleto) {
+        String formato_xml_canonico = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n";
+        formato_xml_canonico += "<documento>";
+        formato_xml_canonico += "\n\t<detalle>";
+        formato_xml_canonico += "\n\t\t<id>1</id>";
+        formato_xml_canonico += "\n\t</detalle>";
+        formato_xml_canonico += "\n</documento>";
+
+        System.out.println("Formato XML: " + formato_xml_canonico);
+
+        // separar llaves xml
+        System.out.println("Separar Lineas XML: ");
+        String[] lineas_xml = formato_xml_canonico.split("\n");
+        // omitimos las 3 primeras lineas
+        System.out.println(lineas_xml[3]);
+        // eliminamos las identaciones del formato
+        String[] xml_identacion = new String[lineas_xml.length - 5];
+        int pos = 0;
+        for (int i = 3; i < lineas_xml.length - 2; i++) {
+            xml_identacion[pos] = EliminarIdentacion(lineas_xml[i]);
+            pos++;
+        }
+        // obtenemos las claves
+        String[] claves_xml = new String[4];
+        claves_xml[0] = "id";
+        claves_xml[1] = "nombre";
+        claves_xml[2] = "apellido";
+        claves_xml[3] = "edad";
+
+        System.out.println("Estructura Canonico XML");
+        String canonico = lineas_xml[0];
+        canonico += "\n<canonico>";
+        canonico += "\n\t<detalle>";
+        String resp = "";
+        for (int i = 0; i < claves_xml.length; i++) {
+            if (lineas_xml.length > i + 3) {
+                resp = AgregarLinea(claves_xml, lineas_xml[i + 3]);
+                if (resp != "") {
+                    canonico += resp;
                 }
+            } else {
+                break;
             }
 
-            ArrayList<String> etiquetas = new ArrayList<>();
-            etiquetas.add("Identificacion");
-            etiquetas.add("Nombres");
-            etiquetas.add("Apellidos");
-            etiquetas.add("Celular");
-            etiquetas.add("Correo");
-            etiquetas.add("Semestre");
-            etiquetas.add("Ciudad");
-            etiquetas.add("Direccion");
-            etiquetas.add("Natalicio");
-            etiquetas.add("Sede");
-            etiquetas.add("AnioGrado");
-            etiquetas.add("Falcultad");
-            etiquetas.add("MateriaCantidad");
-            etiquetas.add("Homologacion");
-            etiquetas.add("Valor");
-            etiquetas.add("Descuentos");
-
-        } catch (Exception e) {
-            System.out.println("Error en el canónico fijo: " + e.getMessage());
         }
-        return ruta_nombre;
+
+        canonico += AgregarLlaveFaltante(claves_xml, canonico);
+
+        canonico += "\n\t<detalle>";
+        canonico += "\n<canonico>";
+
+        System.out.println(canonico);
+        CrearArchivoXML(canonico,nombrecompleto);
+        
 
     }
 
-    public void CrearXMLCanonico(String formato_xml) {
-        try {
-
-            Cola nodo = new Cola();
-            OperacionDocumento od = new OperacionDocumento();
-            // Eliminamos el tag para los registros
-            formato_xml = formato_xml.replace("\n", "");
-            formato_xml = od.EliminarVersionXml(formato_xml);
-            formato_xml = od.EliminarEtiqueta("documento", formato_xml);
-            formato_xml = od.EliminarEtiqueta("detalle", formato_xml);
-            // separar llaves xml
-            String[] lineas_xml = formato_xml.split("\n");
-            String[] xml_sin_identacion = null;
-            int pos = 0;
-            for (int i = 0; i < lineas_xml.length; i++) {
-                xml_sin_identacion = od.EliminarIdentacion(lineas_xml[i]);
-                pos++;
-            }
-
-            try {
-                // obtenemos las claves
-                String[] claves_xml = new String[xml_sin_identacion.length];
-                for (int i = 0; i < xml_sin_identacion.length; i++) {
-                    claves_xml[i] = od.ObtenerClave(xml_sin_identacion[i]);
-                    if (!nodo.ListaVacia()) {
-                        boolean validar = false;
-                        int cant = nodo.CantidadElementos();
-                        validar = nodo.ValidarNombre(claves_xml[i], cant);
-                        if (!validar) {
-                            nodo.AgregarElementoAlFinal(claves_xml[i]);
-                        }
-                    } else {
-                        String value = od.ObtenerClave(xml_sin_identacion[i]);
-                        nodo.AgregarElementoAlInicio(value);
-                    }
-                }
-            } catch (Exception e) {
-                System.out.println("Error al obtener las claves canonico: " + e.getMessage());
-            }
-
-            // guardamos las titulos en el nodo
-            // armamos el contenido del archivo canonico
-            String canonico = lineas_xml[0];
-            System.out.println("Estructura Canonico XML");
-            canonico += "\n<canonico>";
-            canonico += "\n\t<detalle>";
-            int resultado = 0;
-            Cola reco = nodo.cabeza;
-            for (int i = 0; i < lineas_xml.length; i++) {
-                if (i < lineas_xml.length) {
-                    resultado = lineas_xml[i + 3].indexOf(reco.getNombre());
-                } else {
-                    resultado = -1;
-                }
-
-                if (resultado != -1) {
-                    canonico += "\n" + lineas_xml[i + 3];
-                } else {
-                    canonico += "\n\t\t<" + reco.getNombre() + "></" + reco.getNombre() + ">";
-                }
-                reco = reco.getSiguiente();
-            }
-            canonico += "\n\t<detalle>";
-            canonico += "\n<canonico>";
-
-            System.out.println(canonico);
-        } catch (Exception e) {
-            System.out.println("Error en el canonico general: " + e.getMessage());
-        }
-
-    }
-
+    
     public void removeIndex(String[] array, int index) {
         int i = index;
         for (; i < array.length - 1; i++) {
@@ -313,43 +276,53 @@ public class GestionDocumento {
             System.out.println("Error CrearArchivoXML: " + e.getMessage());
         }
     }
+    
+    
+     public static String EliminarIdentacion(String linea) {
+        String[] identacion = linea.split("\t");
+        if (identacion.length > 2) {
+            return identacion[2];
+        } else {
+            return identacion[1];
+        }
+    }
+     public static String ObtenerClave(String propiedad) {
+        String[] clave = propiedad.split("<");
+        String[] llave = clave[1].split(">");
+        return llave[0];
+    }
 
-    //Método que guarda el archivo xml a la cola de prioridad
-    public void colaPrioridad(String nombre_canonico) {
-        try {
-            String[] nombreArchivo = nombre_canonico.split("_");
-            switch (nombreArchivo[0]) {
-                case "SOLI":
-                    // code block
-                        alta.AgregarElementoAlInicio(nombre_canonico);
-                    break;
-                case "SOLMAFI":
-                    // code block
-                        alta.AgregarElementoAlInicio(nombre_canonico);
-                    break;
-                case "SOLMAAC":
-                    // code block
-                        alta.AgregarElementoAlInicio(nombre_canonico);
-                    break;
-                case "SOLGRA":
-                    // code block
-                        media.AgregarElementoAlInicio(nombre_canonico);
-                    break;
-                case "SOLCREES":
-                    // code block
-                        media.AgregarElementoAlInicio(nombre_canonico);
-                    break;
-                case "SOLCANMA":
-                    // code block
-                        baja.AgregarElementoAlInicio(nombre_canonico);
-                    break;
-                default:
-                // code block
-                }
-        } catch (Exception e) {
-            System.out.println("Error general al crear las colas");
+    public static String AgregarLinea(String llave[], String linea) {
+        String canonico = "";
+        int resultado = -1;
+        String llave_fail = "";
+        for (int i = 0; i < llave.length; i++) {
+            resultado = linea.indexOf(llave[i]);
+            if (resultado != -1) {
+                break;
+            }
+        }
+        if (resultado != -1) {
+            canonico += "\n" + linea;
+        } else {
+            canonico = "";
+        }
+        return canonico;
+    }
+
+    public static String AgregarLlaveFaltante(String llave[], String canonico) {
+
+        int resultado = -1;
+        String resp = "";
+        for (int i = 0; i < llave.length; i++) {
+            resultado = canonico.indexOf(llave[i]);
+            if (resultado == -1) {
+                resp += "\n\t\t<" + llave[i] + "></" + llave[i] + ">";
+            }
         }
 
+        return resp;
     }
+
 
 }
