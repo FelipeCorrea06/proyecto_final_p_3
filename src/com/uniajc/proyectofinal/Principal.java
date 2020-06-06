@@ -43,8 +43,8 @@ public class Principal {
 
         hilo.start();
         try {
-            Thread.sleep(10000);
-            hilo.stop();
+            Thread.sleep(100000);
+            //hilo.stop();
         } catch (Exception e) {
             System.out.println("Hilo principal del proyecto error : " + e.getMessage());
         }

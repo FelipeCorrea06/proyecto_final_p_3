@@ -34,7 +34,6 @@ public class GestionDocumento {
     BufferedReader br = null;
     String[][] dimension = null;
     int cant = 0;
-    String nombre = "SOLCANMA";
     private String ruta_xml = "src\\DocumentoXML";
     private String ruta_canonico = "src\\DocumentoXML\\XML_CANONICO";
     private String ruta_comun = "src\\DocumentoLlegda\\CarpetaComun";
@@ -117,7 +116,6 @@ public class GestionDocumento {
                 default:
                 // code block
             }
-            //ruta_nombre = LeerCsv(nombreCompleto);
             LeerCsv(nombreCompleto);
         }
     }
@@ -165,7 +163,6 @@ public class GestionDocumento {
             String ruta_completa_salida = ruta_canonico + "\\" + nombrecompleto;
             CrearArchivoXML(formato_xml, ruta_completa_xml);
             // crear archivo xml canonico
-            //ruta_ nombre = CrearXMLCanonicoFijo(formato_xml);
             CrearXMLCanonicoFijo(formato_xml,ruta_completa_salida);
         } catch (IOException e) {
             System.out.println("Error LeerCSV: " + e.getMessage());

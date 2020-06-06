@@ -1,0 +1,24 @@
+<documento>
+	<detalle>
+		<Identificacion>1234</Identificacion>
+		<Nombres>Luis</Nombres>
+		<Apellidos>Correa</Apellidos>
+		<Celular>3128749804</Celular>
+		<Correo>Lc@gmail.com</Correo>
+		<Semestre>3</Semestre>
+		<Ciudad>Cali</Ciudad>
+		<Sede>Norte</Sede>
+		<AnioGrado>2020</AnioGrado>
+	</detalle>
+	<detalle>
+		<Identificacion>5678</Identificacion>
+		<Nombres>Felipe</Nombres>
+		<Apellidos>Reina</Apellidos>
+		<Celular>3142675738</Celular>
+		<Correo>Fr@gmail.com</Correo>
+		<Semestre>6</Semestre>
+		<Ciudad>Palmira</Ciudad>
+		<Sede>Sur</Sede>
+		<AnioGrado>2021</AnioGrado>
+	</detalle>
+</documento>

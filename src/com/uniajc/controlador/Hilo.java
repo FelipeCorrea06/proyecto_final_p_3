@@ -54,21 +54,49 @@ public class Hilo extends Thread {
                                 break;
                             case "SOLMAFI":
                                 destinoPath = FileSystems.getDefault().getPath("src\\DocumentoSalida\\OUT_SOLMAFI\\" + nombre_archivo);
-                                 try {
-                            Files.move(origenPath, destinoPath, StandardCopyOption.REPLACE_EXISTING);
-                        } catch (IOException e) {
-                            System.err.println("Hay un error al guardar el archivo final: "+e);
-                        }
                                 break;
                             case "SOLMAAC":
                                 destinoPath = FileSystems.getDefault().getPath("src\\DocumentoSalida\\OUT_SOLMAAC\\" + nombre_archivo);
                                 break;
+                        }
+
+                        try {
+                            Files.move(origenPath, destinoPath, StandardCopyOption.REPLACE_EXISTING);
+                        } catch (IOException e) {
+                            System.err.println("Hay un error al guardar el archivo final: "+e);
+                        }
+                    }
+                }
+                
+                else  if (!media.ListaVacia()) {
+                    nombre_archivo = media.EliminarElementoDesdeLaCabeza();
+                    Path origenPath = FileSystems.getDefault().getPath("src\\DocumentoXML\\XML_CANONICO\\" + nombre_archivo);
+                    Path destinoPath = null;
+                    if (!nombre_archivo.equals("")) {
+                        String[] nombre_tipo_archivo = nombre_archivo.split("_");
+                        switch (nombre_tipo_archivo[0]) {
                             case "SOLGRA":
                                 destinoPath = FileSystems.getDefault().getPath("src\\DocumentoSalida\\OUT_SOLGRA\\" + nombre_archivo);
                                 break;
                             case "SOLCREES":
                                 destinoPath = FileSystems.getDefault().getPath("src\\DocumentoSalida\\OUT_SOLCREES\\" + nombre_archivo);
                                 break;
+                        }
+
+                        try {
+                            Files.move(origenPath, destinoPath, StandardCopyOption.REPLACE_EXISTING);
+                        } catch (IOException e) {
+                            System.err.println("Hay un error al guardar el archivo final: "+e);
+                        }
+                    }
+                }
+                else  if (!baja.ListaVacia()) {
+                    nombre_archivo = baja.EliminarElementoDesdeLaCabeza();
+                    Path origenPath = FileSystems.getDefault().getPath("src\\DocumentoXML\\XML_CANONICO\\" + nombre_archivo);
+                    Path destinoPath = null;
+                    if (!nombre_archivo.equals("")) {
+                        String[] nombre_tipo_archivo = nombre_archivo.split("_");
+                        switch (nombre_tipo_archivo[0]) {
                             case "SOLCANMA":
                                 destinoPath = FileSystems.getDefault().getPath("src\\DocumentoSalida\\OUT_SOLCANMA\\" + nombre_archivo);
                                 break;
